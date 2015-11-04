@@ -2,13 +2,13 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_signed.all;
 
-entity controller is
+entity light is
 	port(reset,clk: 	in std_logic;
 	     NS:  					out std_logic_vector(6 downto 0);
-       EW:  					out std_logic_vector(6 downto 0));
-end controller;
+         EW:  					out std_logic_vector(6 downto 0));
+end light;
 
-architecture arch of controller is
+architecture arch of light is
 type state_type is (S0,S1,S2,S3);
 signal PS: state_type;
 signal slow: STD_LOGIC_VECTOR(24 downto 0);
@@ -27,7 +27,7 @@ begin
     slow<=slow+1;
   end if;
 end process;
-slowClk=slow(24);
+slowClk<=slow(24);
 
 
 --Cycle timer
@@ -48,9 +48,9 @@ TIMER<=Q(2);
 		if reset='1' then PS<=S0;
 		elsif(clk'event and clk='1') then
 			case PS is
-				when S0 => if(TIMER='1') then PS<=S1; else PS<=S0;
+				when S0 => if(TIMER='1') then PS<=S1; else PS<=S0; end if;
 				when S1 =>  PS<=S2;
-				when S2 => if(TIMER='1') then PS<=S3; else PS<=S2;
+				when S2 => if(TIMER='1') then PS<=S3; else PS<=S2; end if;
 				when S3 => PS<=S0;
 			end case;
 		end if;
@@ -59,10 +59,10 @@ TIMER<=Q(2);
 	process(PS,TIMER)
 	begin
 		case PS is
-			when S0 => if(TIMER='0') then y<="011_110" else y<="011_101";
-			when S1 => y<="110_011";
-			when S2 => if(TIMER='0') then y<="110_011" else y<=101_011";
-			when S3 => y<="011_110";
+			when S0 => if(TIMER='0') then y<="011110"; else y<="011101"; end if;
+			when S1 => y<="110011";
+			when S2 => if(TIMER='0') then y<="110011"; else y<="101011" ;end if;
+			when S3 => y<="011110";
 		end case;
 	end process;
 
