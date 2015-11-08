@@ -1,11 +1,9 @@
-//not tested
-
 library ieee;
 use ieee.std_logic_1164.all;
 
 entity mealy is
 	port(sync,reset,clk: 	in std_logic;
-	     pulse:		  			out std_logic);
+				  pulse:	out std_logic);
 end mealy;
 
 architecture arch of mealy is
@@ -26,8 +24,8 @@ begin
 	process(PS, sync)
 	begin
 		case PS is
-			when SEEK => if(sync='0') then y<='1' else y<='0'; end if;
-			when FIND => if(sync='0') then y<='0' else y<='0';end if;
+			when SEEK => if(sync='0') then pulse<='1'; else pulse<='0'; end if;
+			when FIND => if(sync='0') then pulse<='0'; else pulse<='0';end if;
 		end case;
 	end process;
 end arch;
