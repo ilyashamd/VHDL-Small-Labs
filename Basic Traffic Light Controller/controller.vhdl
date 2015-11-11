@@ -2,13 +2,13 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_signed.all;
 
-entity light is
+entity controller is
 	port(reset,clk: 	in std_logic;
 	     NS:  					out std_logic_vector(6 downto 0);
          EW:  					out std_logic_vector(6 downto 0));
-end light;
+end controller;
 
-architecture arch of light is
+architecture arch of controller is
 type state_type is (S0,S1,S2,S3);
 signal PS: state_type;
 signal slow: STD_LOGIC_VECTOR(24 downto 0);
@@ -22,12 +22,13 @@ begin
 --Clock divider
 process(clk,reset)
 begin
-  if reset='1' then slow<=(others=>'0');
-  elsif(clk'event and clk='1') then
-    slow<=slow+1;
-  end if;
+if reset='1' then slow<=(others=>'0');
+elsif(clk'event and clk='1') then
+slow<=slow+1;
+end if;
 end process;
 slowClk<=slow(24);
+
 
 
 --Cycle timer
@@ -46,7 +47,7 @@ TIMER<=Q(2);
 	process(slowClk,reset)
 	begin
 		if reset='1' then PS<=S0;
-		elsif(clk'event and clk='1') then
+		elsif(SLOWclk'event and Slowclk='1') then
 			case PS is
 				when S0 => if(TIMER='1') then PS<=S1; else PS<=S0; end if;
 				when S1 =>  PS<=S2;
@@ -66,6 +67,6 @@ TIMER<=Q(2);
 		end case;
 	end process;
 
-  NS<=(0=>y(0), 3=>y(2), 6=>y(1), others=>'1');
-  EW<=(0=>y(3), 3=>y(5), 6=>y(4), others=>'1');
+  NS<=(0=>y(2), 3=>y(0), 6=>y(1), others=>'1');
+  EW<=(0=>y(5), 3=>y(3), 6=>y(4), others=>'1');
 end arch;
